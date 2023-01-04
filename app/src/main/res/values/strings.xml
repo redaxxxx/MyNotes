@@ -1,0 +1,13 @@
+<resources>
+    <string name="app_name">My Notes</string>
+    <string name="edit_task_description">Describe your notes</string>
+    <string name="save_note">add</string>
+    <string name="update_note">update</string>
+    <string name="discard_your_changes_and_quit_editing">discard your changes and quit editing</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Keep editing</string>
+    <string name="delete_yes">Delete</string>
+    <string name="delete_no">Cancel</string>
+    <string name="saved_update">Update</string>
+    <string name="cancel_update">cancel</string>
+</resources>
