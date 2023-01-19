@@ -6,6 +6,7 @@ import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,6 +15,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Canvas;
+import android.graphics.Rect;
 import android.os.Bundle;
 import android.view.View;
 
@@ -21,6 +24,7 @@ import com.example.mynotes.data.NoteDatabase;
 import com.example.mynotes.data.NoteEntity;
 import com.example.mynotes.executor.AppExecutors;
 import com.example.mynotes.models.MainViewModel;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -31,18 +35,24 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.ItemC
     private NoteAdapter noteAdapter;
     private NoteDatabase mDB;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
         recyclerView = (RecyclerView) findViewById(R.id.recycle_view);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this, 2);
+        recyclerView.setLayoutManager(gridLayoutManager);
         noteAdapter = new NoteAdapter(this, this);
         recyclerView.setAdapter(noteAdapter);
 
-        DividerItemDecoration itemDecoration = new DividerItemDecoration(getApplicationContext(), DividerItemDecoration.VERTICAL);
+        RecyclerView.ItemDecoration itemDecoration = new RecyclerView.ItemDecoration() {
+            @Override
+            public void getItemOffsets(@NonNull Rect outRect, @NonNull View view, @NonNull RecyclerView parent, @NonNull RecyclerView.State state) {
+                super.getItemOffsets(outRect, view, parent, state);
+                outRect.set(16,16,16,16);
+            }
+        };
         recyclerView.addItemDecoration(itemDecoration);
 
         new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
@@ -93,7 +103,7 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.ItemC
                     public void run() {
                         int position = viewHolder.getBindingAdapterPosition();
                         List<NoteEntity> notes = noteAdapter.getNotes();
-                        mDB.noteDao().deleteNote(notes.get(position));
+                        mDB.noteDao().deleteById(position);
                     }
                 });
             }

@@ -1,22 +1,28 @@
 package com.example.mynotes;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.mynotes.data.NoteEntity;
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
 public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder>{
+    private static final String LOG_TAG = NoteAdapter.class.getSimpleName();
     private static final String DATE_FORMAT = "dd/MM/yyy";
     final private ItemClickListener itemClickListener;
     private List<NoteEntity> mNoteEntity;
@@ -31,7 +37,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
     @NonNull
     @Override
     public NoteViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.note_layout, parent, false);
+        View view = LayoutInflater.from(context).inflate(R.layout.note_list_item, parent, false);
         return new NoteViewHolder(view);
     }
 
@@ -40,6 +46,7 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
         NoteEntity noteEntity = mNoteEntity.get(position);
         String description = noteEntity.getDescription();
         String modifiedAt = dateFormat.format(noteEntity.getModifiedAt());
+
 
         holder.describeTextView.setText(description);
         holder.updateAtTextView.setText(modifiedAt);
@@ -74,7 +81,6 @@ public class NoteAdapter extends RecyclerView.Adapter<NoteAdapter.NoteViewHolder
 
             describeTextView = itemView.findViewById(R.id.description_TV);
             updateAtTextView = itemView.findViewById(R.id.note_update_at);
-
             itemView.setOnClickListener(this);
         }
 

@@ -1,14 +1,10 @@
 package com.example.mynotes.models;
 
-import android.app.Application;
 
-import androidx.annotation.NonNull;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 
 import com.example.mynotes.data.NoteDatabase;
-import com.example.mynotes.data.NoteEntity;
 
 public class AddNoteViewModelFactory extends ViewModelProvider.NewInstanceFactory {
     private final NoteDatabase noteDatabase;

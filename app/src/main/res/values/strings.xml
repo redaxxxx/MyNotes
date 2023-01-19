@@ -10,4 +10,5 @@
     <string name="delete_no">Cancel</string>
     <string name="saved_update">Update</string>
     <string name="cancel_update">cancel</string>
+    <string name="note_search_edit_text">Search your notes</string>
 </resources>

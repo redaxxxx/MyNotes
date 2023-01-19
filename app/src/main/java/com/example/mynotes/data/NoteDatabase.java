@@ -10,7 +10,7 @@ import androidx.room.RoomDatabase;
 import androidx.room.TypeConverters;
 
 @Database(entities = {NoteEntity.class}, version = 1, exportSchema = false)
-@TypeConverters(DateConverter.class)
+@TypeConverters({DateConverter.class})
 public abstract class NoteDatabase extends RoomDatabase {
 
     private static final String LOG_TAG = NoteDatabase.class.getSimpleName();

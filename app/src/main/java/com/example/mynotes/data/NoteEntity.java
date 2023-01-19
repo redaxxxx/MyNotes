@@ -6,12 +6,16 @@ import androidx.room.Ignore;
 import androidx.room.PrimaryKey;
 
 import java.util.Date;
+import java.util.List;
+
 @Entity(tableName = "notes")
 public class NoteEntity {
 
     @PrimaryKey(autoGenerate = true)
     private int id;
     private String description;
+
+
 
     @ColumnInfo(name = "modified_at")
     private Date modifiedAt;
@@ -51,4 +55,5 @@ public class NoteEntity {
     public void setModifiedAt(Date modifiedAt) {
         this.modifiedAt = modifiedAt;
     }
+
 }
