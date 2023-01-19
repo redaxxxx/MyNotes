@@ -55,20 +55,6 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.ItemC
         };
         recyclerView.addItemDecoration(itemDecoration);
 
-        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
-
-            @Override
-            public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                showDeleteConfirmation(viewHolder);
-            }
-        }).attachToRecyclerView(recyclerView);
-
-
         FloatingActionButton floatingAction = findViewById(R.id.fab);
         floatingAction.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -102,7 +88,6 @@ public class MainActivity extends AppCompatActivity implements NoteAdapter.ItemC
                     @Override
                     public void run() {
                         int position = viewHolder.getBindingAdapterPosition();
-                        List<NoteEntity> notes = noteAdapter.getNotes();
                         mDB.noteDao().deleteById(position);
                     }
                 });

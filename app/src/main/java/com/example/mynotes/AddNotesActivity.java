@@ -6,6 +6,7 @@ import androidx.core.app.NavUtils;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.lifecycle.ViewModelProviders;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -13,6 +14,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.TypedValue;
 import android.view.Menu;
@@ -76,6 +78,7 @@ public class AddNotesActivity extends AppCompatActivity {
         }
 
         Intent intent = getIntent();
+
         if (intent != null && intent.hasExtra(EXTRA_NOTE_ID)) {
             topBar.setTitle("Update note");
             if (noteId == DEFAULT_NOTE_ID) {
@@ -142,73 +145,58 @@ public class AddNotesActivity extends AppCompatActivity {
         noteEditText.setText(noteEntity.getDescription());
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.edit_note_activity_menu, menu);
+        return true;
+    }
 
-    //    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        switch (item.getItemId()) {
-//            case android.R.id.home:
-//
-//                if (!noteHasChange) {
-//                    // if note not has change, navigate up to parent activity
-//                    NavUtils.navigateUpFromSameTask(AddNotesActivity.this);
-//                    return true;
-//                }
-//
-//                // Otherwise if there are unsaved changes, setup a dialog to warn the user.
-//                // Create a click listener to handle the user confirming that
-//                // changes should be discarded.
-//                DialogInterface.OnClickListener dialogInterface = new DialogInterface.OnClickListener() {
-//                    @Override
-//                    public void onClick(DialogInterface dialog, int which) {
-//                        NavUtils.navigateUpFromSameTask(AddNotesActivity.this);
-//                    }
-//                };
-//
-//                showUnSavedChangesDialog(dialogInterface);
-//                return true;
-//
-//        }
-//        return super.onOptionsItemSelected(item);
-//    }
-//
-//    @Override
-//    public void onBackPressed() {
-//        if (!noteHasChange) {
-//            super.onBackPressed();
-//            return;
-//        }
-//        // Otherwise if there are unsaved changes, setup a dialog to warn the user.
-//        // Create a click listener to handle the user confirming that changes should be discarded.
-//        DialogInterface.OnClickListener discardButtonClickListener = new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int i) {
-//                finish();
-//            }
-//        };
-//
-//        // Show dialog that there are unsaved changes
-//        showUnSavedChangesDialog(discardButtonClickListener);
-//    }
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        if (noteId == DEFAULT_NOTE_ID){
+            menu.findItem(R.id.delete_note).setVisible(false);
+        }else {
+            menu.findItem(R.id.delete_note).setVisible(true);
+        }
+        return true;
+    }
 
-//    private void showUnSavedChangesDialog(DialogInterface.OnClickListener dialogInterface) {
-//
-//        // Create an AlertDialog.Builder and set the message, and click listeners
-//        // for the positive and negative buttons on the dialog.
-//        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-//        builder.setMessage(R.string.discard_your_changes_and_quit_editing);
-//        builder.setPositiveButton(R.string.discard, dialogInterface);
-//        builder.setNegativeButton(R.string.keep_editing, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialogInterface, int id) {
-//                if (dialogInterface == null) {
-//                    dialogInterface.dismiss();
-//                }
-//            }
-//        });
-//
-//        // Create and show the AlertDialog
-//        AlertDialog dialog = builder.create();
-//        dialog.show();
-//    }
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()){
+            case R.id.delete_note:
+                showDeleteConfirmation();
+                finish();
+
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showDeleteConfirmation(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage("Delete Note");
+        builder.setPositiveButton(R.string.delete_yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                AppExecutors.getInstance().diskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        mDB.noteDao().deleteById(noteId);
+                    }
+                });
+            }
+        });
+        builder.setNegativeButton(R.string.delete_no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                if (dialog != null){
+                    dialog.dismiss();
+                }
+            }
+        });
+        AlertDialog dialog = builder.create();
+        dialog.show();
+    }
 
 }
